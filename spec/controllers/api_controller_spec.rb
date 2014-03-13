@@ -75,15 +75,23 @@ describe ApiController do
         expect(parsed_json["status"]).to eq(200)
       end
 
-      it "returns access token"
+      it "returns access token" do
+        post(:login, { email: user.email,
+                          password: user.password })
+
+        parsed_json = JSON(response.body)
+        expect(parsed_json["access_token"]).to eq(user.access_token)
+      end
     end
 
     context "Given incorrect details" do
-      it "returns an error message"
-    end
+      it "returns an error message" do
+        post(:login, { email: user.email,
+                          password: "lalala" })
 
-    context "Given the user is already logged in" do
-      it "returns an error message"
+        parsed_json = JSON(response.body)
+        expect(parsed_json["status"]).to eq(403)
+      end
     end
   end
 end

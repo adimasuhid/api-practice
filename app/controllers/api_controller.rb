@@ -13,7 +13,15 @@ class ApiController < ApplicationController
   end
 
   def login
-    render json: { status: 200 }
+    user = User.where(email: user_params[:email]).first
+
+    response = if user.valid_password? user_params[:password]
+      { status: 200, access_token: user.access_token }
+    else
+      { status: 403 }
+    end
+
+    render json: response
   end
 
 private
